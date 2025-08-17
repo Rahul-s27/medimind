@@ -1,0 +1,14 @@
+# Python virtual environments and caches
+backend/.venv/
+**/__pycache__/
+
+# Large/generated data artifacts
+backend/chroma_db/
+backend/uploads/
+backend/web_cache.sqlite
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
