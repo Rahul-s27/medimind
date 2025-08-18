@@ -56,7 +56,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",  # React dev server
-    "https://yourdomain.com"  # Production domain
+    "https://yourdomain.com",
+    "https://medimind.vercel.app"  # Production domain
 ]
 # Allow CORS for local frontend dev
 app.add_middleware(

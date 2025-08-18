@@ -30,7 +30,7 @@ from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from duckduckgo_search import DDGS
 
-embeddings = SentenceTransformerEmbeddings(model_name="static-retrieval-mrl-en-v1")
+embeddings = SentenceTransformerEmbeddings(model_name="sentence-transformers/paraphrase-MiniLM-L6-v2")
 db = Chroma(persist_directory=PERSIST_DIR, embedding_function=embeddings, collection_name=COLLECTION)
 retriever = db.as_retriever(search_kwargs={"k": int(os.getenv("RETRIEVAL_K", "6"))})
 
