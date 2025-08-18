@@ -113,3 +113,14 @@
   color: #aaa;
   z-index: 2;
 }
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .landing-header { right: 16px; top: 12px; }
+  .brand-name { font-size: 1.125rem; }
+  .landing-content { padding: 0 12px; }
+  .landing-content h1 { font-size: 2.25rem; }
+  .tagline { font-size: 1rem; margin-bottom: 0.75rem; }
+  .landing-content p { font-size: 1rem; margin-bottom: 1.75rem; }
+  #google-signin-button { margin-top: 1.25rem; }
+}

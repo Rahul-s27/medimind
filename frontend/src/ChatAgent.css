@@ -30,6 +30,16 @@ body {
   background-color: #252525;
 }
 
+/* Hamburger visible on small screens */
+.hamburger-button {
+  display: none;
+  background: transparent;
+  color: #ffb057;
+  font-size: 20px;
+  border: none;
+  margin-right: 8px;
+}
+
 .chat-agent-toggles {
   display: flex;
   gap: 20px;
@@ -439,6 +449,48 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+/* Overlay when sidebar is open on mobile */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hamburger-button {
+    display: inline-flex;
+  }
+
+  .chat-agent-container {
+    position: relative;
+  }
+
+  .chat-agent-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 78vw;
+    max-width: 360px;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 10;
+  }
+
+  .chat-agent-container.sidebar-open .chat-agent-sidebar {
+    transform: translateX(0%);
+  }
+
+  .chat-agent-main {
+    flex: 1;
+  }
+
+  .message { max-width: 90%; }
+  .chat-agent-input-form textarea { font-size: 15px; }
 }
 
 .chat-agent-sidebar h3 {

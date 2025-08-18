@@ -48,6 +48,7 @@ export default function ChatAgent({ user, onLogout }) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [models, setModels] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Set DeepSeek Chat V3 as default for web mode, fallback to openrouter/auto for AI mode
   const [selectedModel, setSelectedModel] = useState('deepseek/deepseek-chat-v3-0324:free');
   const [mode, setMode] = useState('web'); // 'ai' or 'web'
@@ -281,9 +282,16 @@ export default function ChatAgent({ user, onLogout }) {
   };
 
   return (
-    <div className="chat-agent-container">
+    <div className={`chat-agent-container ${isSidebarOpen ? 'sidebar-open' : ''}`}>
       <main className="chat-agent-main">
         <header className="chat-agent-header">
+          <button
+            className="hamburger-button"
+            aria-label="Toggle menu"
+            onClick={() => setIsSidebarOpen((v) => !v)}
+          >
+            ☰
+          </button>
           <div className="chat-agent-toggles">
             <label>
               <input type="checkbox" checked={showSources} onChange={() => setShowSources(!showSources)} />
@@ -395,6 +403,8 @@ export default function ChatAgent({ user, onLogout }) {
           </div>
         </footer>
       </main>
+
+      {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
 
       <aside className="chat-agent-sidebar">
         <h3>Model Details</h3>

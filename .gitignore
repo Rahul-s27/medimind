@@ -1,14 +1,63 @@
-# Python virtual environments and caches
-backend/.venv/
-**/__pycache__/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Large/generated data artifacts
-backend/chroma_db/
-backend/uploads/
-backend/web_cache.sqlite
+node_modules
+dist
+dist-ssr
+*.local
 
-# Environment files
-.env
-
-# OS files
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+# Python / FastAPI
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.mypy_cache/
+*.pytest_cache/
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+*.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Frontend / Node
+node_modules/
+dist/
+build/
+*.log
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
