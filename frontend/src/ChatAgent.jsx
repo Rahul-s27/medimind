@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatAgent.css';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://medimind-96a3.onrender.com';
 
 
 // Reusable card to render structured AI responses
