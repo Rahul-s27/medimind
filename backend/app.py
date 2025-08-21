@@ -100,7 +100,6 @@ def ask(req: AskRequest):
         model=req.model,
         max_tokens=req.max_tokens,
         temperature=temperature,
-        use_rag=bool(req.use_rag),
         web_max_results=req.max_results,
     )
     # Expected shape from rag.answer: {"answer": str, "sources": [..]}
@@ -171,7 +170,6 @@ async def ask_form(
         model=chosen_model,
         max_tokens=None,
         temperature=0.1,
-        use_rag=False,
         web_max_results=None,
     )
     ans_text = result.get('answer') if isinstance(result, dict) else str(result)
