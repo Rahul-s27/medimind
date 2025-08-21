@@ -8,7 +8,8 @@ export default function GoogleSignIn({ onAuth }) {
         client_id: '942827189906-i4pk9ltfm0fmvgu4p96qokkgerveht4f.apps.googleusercontent.com',
         callback: async (response) => {
           // Send ID token to backend for verification
-          const res = await fetch('http://localhost:8000/auth/verify', {
+          const res = await fetch('https://medimind-96a3.onrender.com/auth/verify', {
+
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id_token: response.credential })
