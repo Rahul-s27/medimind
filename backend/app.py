@@ -57,7 +57,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",  # React dev server
     "https://yourdomain.com",
-    "https://medimind.vercel.app" # Production domain
+    "https://medimind-navy.vercel.app" # Production domain
 ]
 # Allow CORS for local frontend dev
 app.add_middleware(
@@ -97,7 +97,6 @@ def ask(req: AskRequest):
     # Default to RAG/web pipeline
     result = rag.answer(
         req.question,
-        k=req.k,
         model=req.model,
         max_tokens=req.max_tokens,
         temperature=temperature,
@@ -169,7 +168,6 @@ async def ask_form(
     # Web mode -> use RAG; image is currently ignored
     result = rag.answer(
         question,
-        k=None,
         model=chosen_model,
         max_tokens=None,
         temperature=0.1,
@@ -187,4 +185,4 @@ async def ask_form(
 
 @app.get("/")
 def root():
-    return {"message": "AI Healthcare Backend is running"}
+    return {"status": "ok", "message": "MediMind Backend is Live 🚀"}
