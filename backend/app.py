@@ -128,12 +128,6 @@ def list_models():
         ]
     }
 
-
-@app.get("/")
-def root():
-    return {"message": "AI Healthcare Backend is running"}
-
-
 @app.post("/ask-form")
 async def ask_form(
     question: str = Form(...),
@@ -190,3 +184,7 @@ async def ask_form(
         title=f"Search Results for '{question}'",
         summary="Here are the latest trusted sources for your query.",
     )
+
+@app.get("/")
+def root():
+    return {"message": "AI Healthcare Backend is running"}
