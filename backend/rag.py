@@ -30,9 +30,6 @@ from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from duckduckgo_search import DDGS
 
-embeddings = SentenceTransformerEmbeddings(model_name="sentence-transformers/paraphrase-MiniLM-L6-v2")
-db = Chroma(persist_directory=PERSIST_DIR, embedding_function=embeddings, collection_name=COLLECTION)
-retriever = db.as_retriever(search_kwargs={"k": int(os.getenv("RETRIEVAL_K", "6"))})
 
 # Chat model via OpenAI-compatible client pointing to OpenRouter
 from langchain_openai import ChatOpenAI
@@ -348,95 +345,24 @@ def answer_direct(
 def answer(
     question: str,
     *,
-    k: int | None = None,
     model: str | None = None,
     max_tokens: int | None = None,
     temperature: float = 0.1,
-    use_rag: bool = True,
     web_max_results: int | None = None,
 ) -> Dict[str, Any]:
-    """Run retrieval + generation and return {answer, sources}.
-    k overrides retriever top-k temporarily.
-    """
+    """Run web-based retrieval and generation and return {answer, sources}."""
     # Normalize/validate requested model
     if model and model not in ALLOWED_MODELS:
         model = DEFAULT_MODEL
 
-    # If explicitly not using RAG, go straight to web docs summary
-    if not use_rag:
-        web_docs = _web_fallback_docs(question, max_pages=(web_max_results or 12))
-        web_docs = _shrink_documents(web_docs)
-        llm = _get_llm(model=model, temperature=temperature, max_tokens=max_tokens)
-        prompt = _get_prompt_for_model(model)
-        doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
-        web_out = doc_chain.invoke({"input": question, "context": web_docs})
-        web_text = (
-            web_out.get("answer") if isinstance(web_out, dict) else str(web_out)
-        )
-        web_sources = _format_sources_from_docs(web_docs, question=question)
-        return {"answer": web_text, "sources": web_sources}
-    # Optionally override k at call-time (RAG path)
-    if k is not None:
-        local_retriever = db.as_retriever(search_kwargs={"k": k})
-        llm = _get_llm(model=model, temperature=temperature, max_tokens=max_tokens)
-        prompt = _get_prompt_for_model(model)
-        doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
-        chain = create_retrieval_chain(retriever=local_retriever, combine_docs_chain=doc_chain)
-    else:
-        chain = _build_chain(model=model, temperature=temperature, max_tokens=max_tokens)
-
-    # Invoke; different LC versions return different keys
-    try:
-        out = chain.invoke({"input": question})
-    except openai.APIStatusError as e:
-        # Handle OpenRouter 402 (insufficient credits for requested max_tokens)
-        message = str(e)
-        if getattr(e, "status_code", None) == 402 or "requires more credits" in message:
-            # retry with a smaller token budget
-            safe_tokens = min(1024, DEFAULT_MAX_TOKENS)
-            llm = _get_llm(model=model, temperature=temperature, max_tokens=safe_tokens)
-            prompt = _get_prompt_for_model(model)
-            # Rebuild chain with reduced max_tokens
-            if k is not None:
-                local_retriever = db.as_retriever(search_kwargs={"k": k})
-                doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
-                chain = create_retrieval_chain(retriever=local_retriever, combine_docs_chain=doc_chain)
-            else:
-                doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
-                chain = create_retrieval_chain(retriever=retriever, combine_docs_chain=doc_chain)
-            out = chain.invoke({"input": question})
-        else:
-            raise
-    # out may include 'answer' or 'output_text' or just be a string
-    if isinstance(out, dict):
-        text = out.get("answer") or out.get("output_text") or out.get("result") or str(out)
-        docs = out.get("context") or out.get("documents") or []
-    else:
-        text = str(out)
-        docs = []
-
-    # Build enriched sources from retrieved docs if available
-    sources: List[Dict[str, Any]] = []
-    try:
-        if docs:
-            sources = _format_sources_from_docs(docs, question=question)
-    except Exception:
-        sources = []
-
-    # If we got no context back, try live web fallback on trusted domains
-    if not docs:
-        web_docs = _web_fallback_docs(question, max_pages=(web_max_results or 12))
-        web_docs = _shrink_documents(web_docs)
-        if web_docs:
-            llm = _get_llm(model=model, temperature=temperature, max_tokens=max_tokens)
-            prompt = _get_prompt_for_model(model)
-            doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
-            web_out = doc_chain.invoke({"input": question, "context": web_docs})
-            web_text = (
-                web_out.get("answer") if isinstance(web_out, dict) else str(web_out)
-            )
-            # Replace sources with enriched web sources
-            web_sources = _format_sources_from_docs(web_docs, question=question)
-            return {"answer": web_text, "sources": web_sources}
-
-    return {"answer": text, "sources": sources}
+    web_docs = _web_fallback_docs(question, max_pages=(web_max_results or 12))
+    web_docs = _shrink_documents(web_docs)
+    llm = _get_llm(model=model, temperature=temperature, max_tokens=max_tokens)
+    prompt = _get_prompt_for_model(model)
+    doc_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
+    web_out = doc_chain.invoke({"input": question, "context": web_docs})
+    web_text = (
+        web_out.get("answer") if isinstance(web_out, dict) else str(web_out)
+    )
+    web_sources = _format_sources_from_docs(web_docs, question=question)
+    return {"answer": web_text, "sources": web_sources}

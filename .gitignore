@@ -23,41 +23,33 @@ dist-ssr
 *.sln
 *.sw?
 .env
-# Python / FastAPI
+windsurf_deployment.yaml
+.venv
+chroma_db
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.sqlite3
-*.log
-*.pot
-*.pyc
-*.mypy_cache/
-*.pytest_cache/
+# Python
 .venv/
-venv/
-env/
-ENV/
+__pycache__/
+*.pyc
 
-# Environment variables
-.env
-*.env
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# Frontend / Node
+# Node
 node_modules/
 dist/
 build/
-*.log
+.vite/
 
-# OS/system files
-.DS_Store
-Thumbs.db
+# Vector DB
+chromadb/
 
-# IDE/editor
+# Env files
+.env
+.env.local
+.env.*.local
+
+# IDE
 .vscode/
 .idea/
-*.swp
-*.swo
+*.log
+.DS_Store
+Thumbs.db
